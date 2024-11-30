@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "mobi-tuyen-dung",
+    "slug": "mobi-tuyen-dung",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "sdkVersion": "51.0.0",
+    "icon": "./assets/images/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "y"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.nganhkiet2003.mobituyendung"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "apiUrl": "http://192.168.1.161:8080/app-tuyen-dung/api/v1",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3a9f66b8-243f-414d-a361-0650be128bcf"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3a9f66b8-243f-414d-a361-0650be128bcf"
+    }
+  }
+}
