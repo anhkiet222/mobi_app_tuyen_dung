@@ -99,15 +99,15 @@ export const fetchDataJobLocation = async () => {
     }
 };
 
-export const createCV = async (payload, token) => {  
+export const createCV = async (formdata, token) => {  
     try {
       const response = await axios.post(
-        `${apiUrl}/cv/createCV`,
-        payload,
+        `${apiUrl}/cv/createCVmobi`,
+        formdata,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+            
           },
         }
       );

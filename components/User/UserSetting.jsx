@@ -222,17 +222,18 @@ const UserSetting = () => {
   const handleSaveUser = async () => {
     try {
       const data = {
-        experienceJobCode: inputValues.experienceJobCode,
+        experienceJobCode: inputValues.experienceJobCode.code,
         idUser: userData.id,
         isFindJob: inputValues.isFindJob,
         isTakeMail: inputValues.isTakeMail,
         addressCode: inputValues.addressCode.code,
         categoryJobCode: inputValues.categoryJobCode.code,
-        salaryJobCode: inputValues.salaryJobCode,
+        salaryJobCode: inputValues.salaryJobCode.code,
         listSkills: inputValues.listSkills,
         file: inputValues.file,
         fileBase64: inputValues.fileBase64,
       };
+      console.log("🚀 ~ handleSaveUser ~ data", data);
       
       const res = await saveUserSettings(data, userToken);
       if (res && res.errCode === 0) {

@@ -8,20 +8,28 @@ import {
   Image,
   Alert,
 } from "react-native";
-import { createNewUser, requestOtp, verifyOtp } from "../../api/userApi";
-
+import "firebase/auth";
+import { getAuth } from "firebase/auth";
+import { createNewUser } from "../../api/userApi";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import firebaseApp from "../../utils/firebase";
 const Otp = ({ dataUser }) => {
-  const [requestID, setRequestID] = useState("");
   const [inputValues, setInputValues] = useState({
     so1: "",
     so2: "",
     so3: "",
     so4: "",
+    so5: "",
+    so6: "",
   });
+  const auth = getAuth(firebaseApp);
 
   useEffect(() => {
     if (dataUser) {
-      sendOtpToUser();
+      let fetchOtp = async () => {
+        await onSignInSubmit(false);
+      };
+      fetchOtp();
     }
   }, [dataUser]);
 
@@ -29,57 +37,99 @@ const Otp = ({ dataUser }) => {
     setInputValues({ ...inputValues, [name]: text });
   };
 
-  const sendOtpToUser = async () => {
+  const configureCaptcha = () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
+    }
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "sign-in-button",
+      {
+        size: "invisible",
+        // theme: "dark", // Chủ đề của ReCAPTCHA
+        defaultCountry: "VN",
+      },
+      auth
+    );
+  };
+
+  let onSignInSubmit = async (isResend) => {
+    if (!isResend) {
+      configureCaptcha();
+    }
+    let phoneNumber = props.dataUser.phonenumber;
+    if (phoneNumber) {
+      phoneNumber = "+84" + phoneNumber.slice(1);
+    }
+
+    console.log("check phonenumber", phoneNumber);
+    const appVerifier = window.recaptchaVerifier;
+
     try {
-      const phoneNumber = dataUser.phonenumber;
-      const response = await requestOtp(phoneNumber);
-      if (response) {
-        setRequestID(response.result);
-        
-        Alert.alert("Thông báo", "Đã gửi OTP thành công!");
-      }
+      const confirmationResult = await signInWithPhoneNumber(
+        auth,
+        phoneNumber,
+        appVerifier
+      );
+      window.confirmationResult = confirmationResult;
+      Alert.alert("Thông báo", "Đã gửi mã OTP vào điện thoại");
     } catch (error) {
-      Alert.alert("Thông báo", "Gửi OTP thất bại!");
-      console.log("🚀 ~ sendOtpToUser ~ error:", error);
+      Alert.alert("Thông báo", "Gửi mã thất bại !");
     }
   };
 
-  const submitOTP = async () => {
-    try {
-      const otpCode = Object.values(inputValues).join("");
-
-      if (otpCode.length !== 4) {
-        Alert.alert("Thông báo", "Vui lòng nhập đầy đủ 4 số OTP!");
-        return;
-      }
-
-      const response = await verifyOtp(requestID, otpCode);
-      if (response.result) {
-        Alert.alert("Thông báo", "Xác minh OTP thành công!");
-
-        const res = await createNewUser({
-          password: dataUser.password,
-          firstName: dataUser.firstName,
-          lastName: dataUser.lastName,
-          phonenumber: dataUser.phonenumber,
-          roleCode: dataUser.roleCode,
-          email: dataUser.email,
-          genderCode: dataUser.genderCode,
-          image: dataUser.image,
-        });
-
-        if (res && res.statusCode === 200) {
-          Alert.alert("Thông báo", "Tạo tài khoản thành công!");
-        } else {
-          Alert.alert("Thông báo", "Tạo tài khoản thất bại!");
-        }
-      } else {
-        Alert.alert("Thông báo", "Mã OTP không đúng!");
-      }
-    } catch (error) {
-      Alert.alert("Thông báo", "Xác minh OTP thất bại!");
-      console.log("🚀 ~ submitOTP ~ error:", error);
+  let submitOTP = async () => {
+    if (
+      inputValues.so1 === "" ||
+      inputValues.so2 === "" ||
+      inputValues.so3 === "" ||
+      inputValues.so4 === "" ||
+      inputValues.so5 === "" ||
+      inputValues.so6 === ""
+    ) {
+      Alert.alert("Thông báo", "Vui lòng nhập đầy đủ mã OTP !");
+      return;
     }
+    const code = +(
+      inputValues.so1 +
+      inputValues.so2 +
+      inputValues.so3 +
+      inputValues.so4 +
+      inputValues.so5 +
+      inputValues.so6
+    );
+
+    await window.confirmationResult
+      .confirm(code)
+      .then((result) => {
+        const user = result.user;
+        Alert.alert("Thông báo", "Đã xác minh số điện thoại !");
+        let createUser = async () => {
+          let res = await createNewUser({
+            password: props.dataUser.password,
+            firstName: props.dataUser.firstName,
+            lastName: props.dataUser.lastName,
+            phonenumber: props.dataUser.phonenumber,
+            roleCode: props.dataUser.roleCode,
+            email: props.dataUser.email,
+            genderCode: props.dataUser.genderCode,
+          });
+          if (res && res.statusCode === 200) {
+            Alert.alert("Thông báo", "Tạo tài khoản thành công");
+            handleLogin(props.dataUser.phonenumber, props.dataUser.password);
+          } else {
+            toast.error(res.errMessage);
+          }
+        };
+        createUser();
+      })
+      .catch((error) => {
+        Alert.alert("Thông báo", "Mã OTP không đúng !");
+        console.log(error);
+      });
+  };
+
+  let resendOTP = async () => {
+    await onSignInSubmit(true);
   };
 
   return (
@@ -98,7 +148,7 @@ const Otp = ({ dataUser }) => {
           </Text>
         </View>
         <View style={styles.inputContainer}>
-          {["so1", "so2", "so3", "so4"].map((name, index) => (
+          {["so1", "so2", "so3", "so4", "so5", "so6"].map((name, index) => (
             <TextInput
               key={index}
               style={styles.input}
@@ -109,7 +159,7 @@ const Otp = ({ dataUser }) => {
             />
           ))}
         </View>
-        <TouchableOpacity onPress={sendOtpToUser}>
+        <TouchableOpacity onPress={resendOTP}>
           <Text style={styles.resendText}>
             Bạn không nhận được OTP? Gửi lại
           </Text>

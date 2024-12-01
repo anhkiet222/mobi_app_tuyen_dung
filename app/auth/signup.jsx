@@ -41,15 +41,15 @@ const SignUpScreen = () => {
   const [roleOpen, setRoleOpen] = useState(false);
   const [roleValue, setRoleValue] = useState(null);
   const [roleItems, setRoleItems] = useState([
-    { label: "USER", value: "USER" },
-    { label: "COMPANY", value: "COMPANY" },
+    { label: "Ứng viên", value: "CANDIDATE" },
+    { label: "Người tuyển dụng", value: "EMPLOYER" },
   ]);
 
   const [genderOpen, setGenderOpen] = useState(false);
   const [genderValue, setGenderValue] = useState(null);
   const [genderItems, setGenderItems] = useState([
-    { label: "NAM", value: "NAM" },
-    { label: "NỮ", value: "NỮ" },
+    { label: "NAM", value: "M" },
+    { label: "NỮ", value: "FE" },
   ]);
 
   const handleOnChange = (name, value) => {
