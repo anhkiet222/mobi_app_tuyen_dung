@@ -373,6 +373,7 @@ const UserSetting = () => {
           tagRemoveIconColor="#CCC"
           tagBorderColor="#CCC"
           tagTextColor="#333"
+          listMode="SCROLLVIEW"
           selectedItemTextColor="#007bff"
           selectedItemIconColor="#007bff"
           itemTextColor="#333"

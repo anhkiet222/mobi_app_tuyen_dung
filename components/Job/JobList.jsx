@@ -42,17 +42,17 @@ const JobList = React.memo(({ post, loading, handleLoadMore, handlePress }) => {
     }
 
     if (diffInYears >= 1) {
-      return `Đã hết hạn ${diffInYears} năm trước`;
+      return `Đã đăng vào ${diffInYears} năm trước`;
     } else if (diffInMonths >= 1) {
-      return `Đã hết hạn ${diffInMonths} tháng trước`;
+      return `Đã đăng vào ${diffInMonths} tháng trước`;
     } else if (diffInWeeks >= 1) {
-      return `Đã hết hạn ${diffInWeeks} tuần trước`;
+      return `Đã đăng vào ${diffInWeeks} tuần trước`;
     } else if (diffInDays >= 1) {
-      return `Đã hết hạn ${diffInDays} ngày trước`;
+      return `Đã đăng vào ${diffInDays} ngày trước`;
     } else {
       const diffInHours = now.diff(postTime, "hours");
       if (diffInHours > 0) {
-        return `Đã hết hạn ${diffInHours} giờ trước`;
+        return `Đã đăng vào ${diffInHours} giờ trước`;
       } else {
         return "Hết hạn vừa xong";
       }

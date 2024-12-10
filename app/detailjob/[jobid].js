@@ -59,7 +59,7 @@ const Detailjob = () => {
                 onHide={() => setAcitveModal(false)}
                 emailCompany={data?.emailCompany}  
                 postId={jobid}
-                jobTitle={data?.name} 
+                jobTitle={data?.name}
             />
         </View>
     )

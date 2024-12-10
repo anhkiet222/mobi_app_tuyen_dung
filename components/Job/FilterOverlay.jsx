@@ -46,11 +46,17 @@ const FilterOverlay = React.memo(({ visible = false, onClose = () => { }, onAppl
         console.error("Error fetching filter data", error);
       }
     };
-
+    console.log("fetching filter data");
     fetchData();
   }, []);
 
-  const applyFilters = useCallback(() => {
+  useEffect(() => {
+    if (!visible) {
+      clearFilters();
+    }
+  }, [visible]);
+
+  const applyFilters = () => {
     onApply({
       categoryJobCode: selectedJobType,
       categoryJoblevelCode: selectedJobLevel,
@@ -59,17 +65,19 @@ const FilterOverlay = React.memo(({ visible = false, onClose = () => { }, onAppl
       categoryWorktypeCode: selectedWorkType,
       addressCode: selectedJobLocation,
     });
-    onClose();
-  });
 
-  const clearFilters = useCallback(() => {
+    onClose();
+  };
+
+
+  const clearFilters = () => {
     setSelectedJobType("");
     setSelectedJobLevel([]);
     setSelectedSalaryType([]);
     setSelectedExpType([]);
     setSelectedWorkType([]);
     setSelectedJobLocation("");
-  });
+  };
 
   return (
     <Modal

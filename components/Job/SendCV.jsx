@@ -18,9 +18,15 @@ import { getDetailUserById } from "../../api/userApi";
 import { sendEmail } from "../../api/emailapi";
 import "react-native-polyfill-globals";
 
-const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const SendCV = ({
+  isOpen,
+  onHide,
+  postId,
+  jobTitle,
+  emailCompany,
+}) => {
   const [selectedType, setSelectedType] = useState("pcCv");
+  const [loading, setloading] = useState(false);
   const { userData, userToken } = useContext(AuthContext);
   const [inputValue, setInputValue] = useState({
     userId: "",
@@ -63,16 +69,15 @@ const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
   };
 
   const handleSendCV = async () => {
-    setIsLoading(true);
+    setloading(true);
 
     try {
-
       const cvSend =
         selectedType === "userCv" ? inputValue.fileUser : inputValue.file;
 
       if (!cvSend) {
         Alert.alert("Thông báo", "Vui lòng chọn hoặc tải CV của bạn.");
-        setIsLoading(false);
+        setloading(false);
         return;
       }
 
@@ -95,7 +100,6 @@ const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
         const emailRes = await sendEmail(emailPayload, userToken);
 
         if (emailRes.code === 200) {
-          setIsLoading(false);
           setInputValue({
             ...inputValue,
             file: "",
@@ -114,7 +118,7 @@ const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
       console.error("Error sending CV:", error);
       Alert.alert("Thất bại", "Có lỗi xảy ra khi gửi CV.");
     } finally {
-      setIsLoading(false);
+      setloading(false);
     }
   };
 
@@ -168,21 +172,17 @@ const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
     }
   };
 
-  if (isLoading) {
+  
+  if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <Modal visible={loading} transparent>
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+      </Modal>
     );
   }
-
+  
   return (
     <Modal visible={isOpen} animationType="slide" transparent>
       <View style={styles.container}>
@@ -373,6 +373,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  loadingOverlay: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.7)",
+},
+
 });
 
 export default SendCV;

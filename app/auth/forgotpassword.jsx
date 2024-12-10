@@ -8,24 +8,21 @@ import {
   ScrollView,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import handleValidate from "../../utils/Validation";
 import { checkUserPhoneService } from "../../api/userApi";
-import OtpForgetPassword from "../../components/User/OtpForgotPassword";
+import {forgetPasswordMobile} from "../../api/userApi";
 
 const ForgetPassword = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [inputValues, setInputValues] = useState({
     phonenumber: "",
-    newPassword: "",
-    confirmPassword: "",
-    isSuccess: false,
   });
   const [inputValidates, setValidates] = useState({
     phonenumber: true,
-    newPassword: true,
-    confirmPassword: true,
   });
 
   const handleOnChange = (name, value) => {
@@ -33,19 +30,28 @@ const ForgetPassword = () => {
   };
 
   const handleOpenVerifyOTP = async () => {
-    let checkPhone = handleValidate(inputValues.phonenumber, "phone");
-    if (checkPhone !== true) {
-      setValidates({
-        ...inputValidates,
-        phonenumber: checkPhone,
-      });
-      return;
-    }
-
+    setIsLoading(true);
     try {
+      let checkPhone = handleValidate(inputValues.phonenumber, "phone");
+      if (checkPhone !== true) {
+        setValidates({
+          ...inputValidates,
+          phonenumber: checkPhone,
+        });
+        return;
+      }
       let res = await checkUserPhoneService(inputValues.phonenumber);
-      if (res === true) {
-        setInputValues({ ...inputValues, isOpen: true });
+      if (res.data === true) {
+        let sendNewPassword = await forgetPasswordMobile(inputValues.phonenumber);
+        console.log(sendNewPassword.data.error);
+        console.log(sendNewPassword.data.errorMessage);
+        if (sendNewPassword && sendNewPassword.data.error == 0) {
+          Alert.alert("Thành công", "Mật khẩu mới đã được gửi qua mail của bạn. Vui lòng kiểm tra hộp thư đến, hoặc hộp thư rác nếu không thấy trong hộp thư đến.");
+          router.push("/auth/signin");
+        }
+        else{
+          Alert.alert("Lỗi", sendNewPassword.errorMessage);
+        }
       } else {
         setValidates({
           ...inputValidates,
@@ -57,11 +63,18 @@ const ForgetPassword = () => {
       console.log("🚀 ~ handleOpenVerifyOTP ~ error:", error);
       Alert.alert("Lỗi", "Đã xảy ra lỗi khi xác thực số điện thoại.");
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
-  if (inputValues.isOpen) {
-    return <OtpForgetPassword dataUser={inputValues.phonenumber} />;
-  }
+  if (isLoading) {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+    );
+}
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

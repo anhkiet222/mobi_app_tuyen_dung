@@ -9,14 +9,15 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { registerUser } from "../../api/userApi";
 import handleValidate from "../../utils/Validation";
-import Otp from '../../components/User/Otp'
-
+import { createNewUser } from "../../api/userApi";
 const SignUpScreen = () => {
-  const router = useRouter();   
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [inputValidates, setValidates] = useState({
     phonenumber: true,
     password: true,
@@ -74,11 +75,56 @@ const SignUpScreen = () => {
   const [isAgainPassVisible, setIsAgainPassVisible] = useState(false);
 
   let handleOpenVerifyOTP = async () => {
+    if (
+      inputValues.phonenumber === "" ||
+      inputValues.password === "" ||
+      inputValues.firstName === "" ||
+      inputValues.lastName === "" ||
+      inputValues.email === "" ||
+      inputValues.roleCode === "" ||
+      inputValues.genderCode === "" ||
+      inputValues.genderCode === "" ||
+      inputValues.againPass === ""
+    ) {
+      Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin !");
+      return;
+    }
     let checkPhonenumber = handleValidate(inputValues.phonenumber, "phone");
+    if (checkPhonenumber !== true) {
+      Alert.alert("Lỗi", "Số điện thoại không hợp lệ");
+      return;
+    }
     let checkPassword = handleValidate(inputValues.password, "password");
+    if (checkPassword !== true) {
+      Alert.alert("Lỗi", "Mật khẩu phải chứa ít nhất 6 ký tự");
+      return
+    }
     let checkFirstName = handleValidate(inputValues.firstName, "isEmpty");
+    if (checkFirstName !== true) {
+      Alert.alert("Lỗi", "Họ không được để trống");
+      return
+    }
     let checkLastName = handleValidate(inputValues.lastName, "isEmpty");
+    if (checkLastName !== true) {
+      Alert.alert("Lỗi", "Tên không được để trống");
+      return
+    }
     let checkEmail = handleValidate(inputValues.email, "email");
+    if (checkEmail !== true) {
+      Alert.alert("Lỗi", "Email không hợp lệ");
+      return;
+    }
+    let checklastNameNumber = handleValidate(formData.lastName, "noNumber");
+    if (checklastNameNumber !== true) {
+      Alert.alert("L��i", "Tên không được chứa số");
+      return;
+    }
+    let checkfirstNameNumber = handleValidate(formData.lastName, "noNumber");
+    if (checkfirstNameNumber !== true) {
+      Alert.alert("Lỗi", "Họ không được chứa số");
+      return;
+    }
+
     if (
       !(
         checkPhonenumber === true &&
@@ -102,12 +148,12 @@ const SignUpScreen = () => {
       Alert.alert("Thông báo", "Mật khẩu nhập lại không trùng khớp!");
       return;
     }
-
+    setIsLoading(true);
     const res = await registerUser(inputValues.phonenumber);
     if (res === true) {
       Alert.alert("Thông báo", "Số điện thoại đã tồn tại !");
     } else {
-      setInputValues({
+      let reponse = await createNewUser({
         ...inputValues,
         ["dataUser"]: {
           phonenumber: inputValues.phonenumber,
@@ -120,10 +166,28 @@ const SignUpScreen = () => {
           image:
             "https://inkythuatso.com/uploads/thumbnails/800/2023/03/6-anh-dai-dien-trang-inkythuatso-03-15-26-36.jpg",
         },
-        ["isOpen"]: true,
       });
+      console.log(inputValues);
+      console.log(reponse);
+      if (reponse && reponse.statusCode === 200) {
+        Alert.alert("Thông báo", "Tạo tài khoản thành công");
+        setIsLoading(false);
+        router.push("/auth/signin");
+      } else {
+        setIsLoading(false);
+        console.error(reponse.errMessage);
+        Alert.alert("Thông báo", "Tạo tài khoản thất bại");
+      }
     }
   };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -272,7 +336,6 @@ const SignUpScreen = () => {
           </View>
         </View>
       )}
-      {inputValues.isOpen === true && <Otp dataUser={inputValues.dataUser} />}
     </ScrollView>
   );
 };

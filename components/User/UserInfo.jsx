@@ -6,6 +6,7 @@ import { updateUserInfo, fetchDataCodeGender } from '../../api/userApi';
 import moment from 'moment';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import handleValidate from "../../utils/Validation";
 
 const UserInfo = () => {
     const [loading, setLoading] = useState(false);
@@ -77,6 +78,25 @@ const UserInfo = () => {
 
     const handleEditToggle = async () => {
         if (isEditing) {
+
+            let checkEmail = handleValidate(formData.email, "email");
+            if (checkEmail!== true) {
+                Alert.alert("Lỗi", "Email không hợp lệ");
+                return 
+            }
+            let checkfirstName = handleValidate(formData.firstName, "noNumber");
+
+            if (checkfirstName !== true) {
+                Alert.alert("Lỗi", "Họ không hợp lệ");
+                return 
+            }
+            let checklastName = handleValidate(formData.lastName, "noNumber");
+
+            if (checklastName !== true) {
+                Alert.alert("Lỗi", "Tên không hợp lệ");
+                return 
+            }
+
             setLoading(true);
             const userUpdateRequest = {
                 id: userData.id,
@@ -174,7 +194,7 @@ const UserInfo = () => {
 
                     <Text style={styles.label}>Số Điện thoại:</Text>
                     <TextInput
-                        style={styles.input}
+                        style={styles.inputPhone}
                         value={formData.phoneNumber}
                         editable={false}
                     />
@@ -280,6 +300,14 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         backgroundColor: '#fff',
         color:'black'
+    },
+    inputPhone: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 12,
+        marginBottom: 15,
+        color:'gray'
     },
     dateInput: {
         flexDirection: 'row',

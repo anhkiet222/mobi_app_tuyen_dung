@@ -17,7 +17,6 @@ export const getCategoryJob = async () => {
 
 export const getListJob = async () => {
     try {
-        console.log("🚀 ~ getListJob ~ `${apiUrl}/post/get-search-post`:", `${apiUrl}/post/get-search-post`)
         const response = await axios.get(`${apiUrl}/post/get-search-post`, {
             params: {
                 limit: 5,

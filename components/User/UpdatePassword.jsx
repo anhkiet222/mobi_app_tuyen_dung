@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { updatePassword } from '../../api/userApi';
 import Feather from '@expo/vector-icons/Feather';
 import { AuthContext } from '../AuthContext';
+import handleValidate from "../../utils/Validation";
 
 const UpdatePassword = () => {
     const { userData } = useContext(AuthContext);
@@ -20,6 +21,12 @@ const UpdatePassword = () => {
         if (data.password !== data.confirmPassword) {
             Alert.alert("Lỗi", "Mật khẩu mới và mật khẩu xác nhận không khớp.");
             return;
+        }
+        let checkPassword = handleValidate(data.password, "password");
+        let checkConfirmPassword = handleValidate(data.password, "password");
+        if (checkPassword !== true || checkConfirmPassword !== true) {
+            Alert.alert("Lỗi", "Mật khẩu phải chứa ít nhất 6 ký tự");
+            return 
         }
 
         try {

@@ -201,3 +201,17 @@ export const forgetPassword = async (phoneNumber) => {
     throw error;
   }
 };
+
+export const forgetPasswordMobile = async (phoneNumber) => {
+  try {
+    const response = await axios.post(
+      `${apiUrl}/user/ForgotPasswordMobile`, {
+        phoneNumber
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error forgetPassword:", error);
+    throw error;
+  }
+};
