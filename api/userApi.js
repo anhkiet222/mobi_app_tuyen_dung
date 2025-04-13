@@ -160,20 +160,24 @@ export const createNewUser = async (params) => {
 
 export const requestOtp = async (phoneNumber) => {
   try {
-    const response = await axios.post(`${apiUrl}/auth/otp/request-otp?phoneNumber=${phoneNumber}`);
+    const response = await axios.post(
+      `${apiUrl}/auth/otp/request-otp?phoneNumber=${phoneNumber}`
+    );
     return response;
   } catch (error) {
-    console.error('Error requesting OTP:', error);
+    console.error("Error requesting OTP:", error);
     throw error;
   }
 };
 
 export const verifyOtp = async (requestId, OTP) => {
   try {
-    const response = await axios.post(`${apiUrl}/auth/otp/verify-otp?requestId=${requestId}&OTP=${OTP}`);
+    const response = await axios.post(
+      `${apiUrl}/auth/otp/verify-otp?requestId=${requestId}&OTP=${OTP}`
+    );
     return response;
   } catch (error) {
-    console.error('Error verifying OTP:', error);
+    console.error("Error verifying OTP:", error);
     throw error;
   }
 };
@@ -204,11 +208,9 @@ export const forgetPassword = async (phoneNumber) => {
 
 export const forgetPasswordMobile = async (phoneNumber) => {
   try {
-    const response = await axios.post(
-      `${apiUrl}/user/ForgotPasswordMobile`, {
-        phoneNumber
-      }
-    );
+    const response = await axios.post(`${apiUrl}/user/ForgotPasswordMobile`, {
+      phoneNumber,
+    });
     return response;
   } catch (error) {
     console.error("Error forgetPassword:", error);
