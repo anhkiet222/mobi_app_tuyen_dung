@@ -1,13 +1,14 @@
-import React from 'react'
-import Setting from '../../components/User/Setting';
-import SafeAreaWrapper from '../../components/SafeAreaWrapper';
+import React from "react";
+import CandidateSetting from "../../components/User/CandidateSetting";
+import SafeAreaWrapper from "../../components/SafeAreaWrapper";
+import EmployerSetting from "../../components/User/EmployerSetting";
 const user = () => {
-    return (
-        <SafeAreaWrapper>
-            <Setting/>
-        </SafeAreaWrapper>
-    )
-}
+  const { userData } = useContext(AuthContext);
+  return (
+    <SafeAreaWrapper>
+      {userData ? <CandidateSetting /> : <EmployerSetting />}
+    </SafeAreaWrapper>
+  );
+};
 
-
-export default user
+export default user;
