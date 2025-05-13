@@ -2,7 +2,7 @@ import React from 'react'
 import JobItem from '../../components/Job/JobItem'
 import SafeAreaWrapper from '../../components/SafeAreaWrapper';
 
-const job = () => {
+const JobScreen = () => {
   return (
     <SafeAreaWrapper>
       <JobItem />
@@ -10,4 +10,4 @@ const job = () => {
   )
 }
 
-export default job
+export default JobScreen;

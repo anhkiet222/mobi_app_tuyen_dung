@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { AuthContext } from '../components/AuthContext';
 import * as Notifications from 'expo-notifications';
 import { getToken } from 'firebase/messaging';

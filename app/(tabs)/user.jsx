@@ -1,8 +1,9 @@
-import React from "react";
 import CandidateSetting from "../../components/User/CandidateSetting";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper";
 import EmployerSetting from "../../components/User/EmployerSetting";
-const user = () => {
+import { useContext } from "react";
+import { AuthContext } from "../../components/AuthContext";
+const UserScreen = () => {
   const { userData } = useContext(AuthContext);
   return (
     <SafeAreaWrapper>
@@ -11,4 +12,4 @@ const user = () => {
   );
 };
 
-export default user;
+export default UserScreen;
