@@ -217,3 +217,25 @@ export const forgetPasswordMobile = async (phoneNumber) => {
     throw error;
   }
 };
+export const getDetailCompanyByUserId = async (
+  userId,
+  companyId,
+  userToken
+) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/company/get-detail-company-by-userId?userId=${userId}&companyId=${companyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error getDetailCompanyByUserId", error.response.data);
+    throw error;
+  }
+};

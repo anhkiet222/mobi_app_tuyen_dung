@@ -206,8 +206,6 @@ const UserSetting = () => {
     setInputValues(newValues);
   };
 
-  console.log("🚀 ~ handleChange:", inputValues);
-
   const handleEdit = () => {
     setIsEditMode(true);
   };
@@ -234,7 +232,7 @@ const UserSetting = () => {
         fileBase64: inputValues.fileBase64,
       };
       console.log("🚀 ~ handleSaveUser ~ data", data);
-      
+
       const res = await saveUserSettings(data, userToken);
       if (res && res.errCode === 0) {
         Alert.alert("Thành công", "Cập nhật thông tin người dùng thành công!");

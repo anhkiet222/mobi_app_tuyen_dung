@@ -23,7 +23,7 @@ const CandidateSetting = () => {
   const { userData, setUserData, logout } = useContext(AuthContext);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [imageUri, setImageUri] = useState(null);
+  const [, setImageUri] = useState(null);
 
   const handleLogout = async () => {
     try {

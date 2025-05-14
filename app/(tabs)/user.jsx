@@ -7,7 +7,11 @@ const UserScreen = () => {
   const { userData } = useContext(AuthContext);
   return (
     <SafeAreaWrapper>
-      {userData ? <CandidateSetting /> : <EmployerSetting />}
+      {userData?.codeRoleAccount === "EMPLOYER" ? (
+        <CandidateSetting />
+      ) : (
+        <EmployerSetting />
+      )}
     </SafeAreaWrapper>
   );
 };
