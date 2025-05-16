@@ -239,3 +239,49 @@ export const getDetailCompanyByUserId = async (
     throw error;
   }
 };
+
+export const UpdateUserService = async (data, userToken) => {
+  try {
+    const response = axios.put(`${apiUrl}/user/update`, data, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error updateUser", error);
+    throw error;
+  }
+};
+
+export const getRuleUser = async () => {
+  try {
+    const response = await axios.get(`${apiUrl}/get-all-code/rules-user`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getRuleUser", error);
+    throw error;
+  }
+};
+
+export const getUsersByCategory = async (categoryJobCode, userToken) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/user/phone`,
+      {
+        params: {
+          categoryJobCode: categoryJobCode,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching users by category:", error);
+    throw error;
+  }
+};

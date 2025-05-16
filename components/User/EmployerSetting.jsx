@@ -12,7 +12,10 @@ import { updateImage } from "../../api/userApi";
 import * as ImagePicker from "expo-image-picker";
 import { TouchableOpacity } from "react-native";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const DEFAULT_USER_IMAGE =
   "https://inkythuatso.com/uploads/thumbnails/800/2023/03/6-anh-dai-dien-trang-inkythuatso-03-15-26-36.jpg?fbclid=IwY2xjawFBAwlleHRuA2FlbQIxMAABHaE053TNouFB_uCoaIiXj56WSPQytGf8ywL1PNzfktyF2TOX7qVMRDhaUw_aem_f65zQPMOofTyGlTMIbierQ";
@@ -154,15 +157,34 @@ const EmployerSetting = () => {
 
         <TouchableOpacity
           style={styles.listItem}
-          onPress={() => router.push("/usersetting/updatepassword")}
+          onPress={() => router.push("/companysetting/manageemployee")}
         >
+          <FontAwesome5
+            name="users-cog"
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
+          <Text style={styles.listText}>Quản lý nhân viên</Text>
           <Ionicons
-            name="lock-closed-outline"
+            name="chevron-forward-outline"
+            size={24}
+            color="black"
+            style={styles.arrowIcon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.listItem}
+          onPress={() => router.push("/companysetting/managepost")}
+        >
+          <MaterialCommunityIcons
+            name="post-outline"
             size={24}
             color="black"
             style={styles.icon}
           />
           <Text style={styles.listText}>Quản lý bài đăng</Text>
+
           <Ionicons
             name="chevron-forward-outline"
             size={24}
@@ -172,23 +194,15 @@ const EmployerSetting = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.listItem}
-          onPress={() => router.push("/usersetting/listjob")}
+          onPress={() => router.push("/companysetting/addpost")}
         >
-          <Feather name="send" size={24} color="black" style={styles.icon} />
-          <Text style={styles.listText}>Tìm kiếm ứng viên</Text>
-          <Ionicons
-            name="chevron-forward-outline"
+          <MaterialIcons
+            name="post-add"
             size={24}
             color="black"
-            style={styles.arrowIcon}
+            style={styles.icon}
           />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.listItem}
-          onPress={() => router.push("/usersetting/listjob")}
-        >
-          <Feather name="send" size={24} color="black" style={styles.icon} />
-          <Text style={styles.listText}>Lịch sử giao dịch</Text>
+          <Text style={styles.listText}>Thêm bài đăng mới</Text>
           <Ionicons
             name="chevron-forward-outline"
             size={24}

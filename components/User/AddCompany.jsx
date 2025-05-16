@@ -187,7 +187,6 @@ const AddCompany = () => {
       descriptionHTML: html,
     }));
   };
-  console.log(pdfSource);
   const handleSave = async () => {
     setIsLoading(true);
     const data = new FormData();
@@ -430,13 +429,6 @@ const AddCompany = () => {
               editable={!isDisabled && userData?.codeRoleAccount !== "ADMIN"}
             />
           </View>
-          {(userData?.codeRoleAccount === "COMPANY" ||
-            (userData?.codeRoleAccount === "EMPLOYER" &&
-              !userData?.idCompany)) && (
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Lưu</Text>
-            </TouchableOpacity>
-          )}
           {userData?.codeRoleAccount === "EMPLOYER" && userData?.idCompany && (
             <Text style={styles.noPermission}>Không có quyền cập nhật</Text>
           )}
@@ -450,6 +442,21 @@ const AddCompany = () => {
           }
         />
       </ScrollView>
+
+      {(userData?.codeRoleAccount === "COMPANY" ||
+        (userData?.codeRoleAccount === "EMPLOYER" && !userData?.idCompany)) && (
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={handleSave}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.floatingButtonText}>Lưu</Text>
+          )}
+        </TouchableOpacity>
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -461,7 +468,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   scrollView: {
-    paddingBottom: 20,
+    paddingBottom: 70,
   },
   title: {
     fontSize: 24,
@@ -517,18 +524,6 @@ const styles = StyleSheet.create({
   pdfViewer: {
     flex: 1,
   },
-  saveButton: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 4,
-    alignItems: "center",
-    marginTop: 16,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   noPermission: {
     color: "#ff0000",
     fontSize: 16,
@@ -539,6 +534,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: "#007bff",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+    zIndex: 1000,
+  },
+  floatingButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

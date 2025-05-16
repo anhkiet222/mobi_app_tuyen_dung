@@ -1,9 +1,10 @@
 import { Redirect } from "expo-router";
-import React, { useContext } from 'react';
-import { AuthContext } from '../components/AuthContext';
-import * as Notifications from 'expo-notifications';
-import { getToken } from 'firebase/messaging';
-import { messaging  } from '../Config/firebase-config';
+import React, { useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
+import "moment/locale/vi";
+import * as Notifications from "expo-notifications";
+import { getToken } from "firebase/messaging";
+import { messaging } from "../Config/firebase-config";
 
 export default function Index() {
   const { isAuthenticated } = useContext(AuthContext);
@@ -47,7 +48,7 @@ export default function Index() {
   //   };
   // }, []);
   if (isAuthenticated) {
-    return <Redirect href='/(tabs)/home' />;
+    return <Redirect href="/(tabs)/home" />;
   }
-  return <Redirect href='/auth/signin' />;
+  return <Redirect href="/auth/signin" />;
 }

@@ -86,3 +86,54 @@ export const updateCompany = async (userToken, formData) => {
     throw error;
   }
 };
+
+export const getAllUserByCompanyIdService = async (data, userToken) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/company/getAllUserByCompanyId?companyId=${data.idCompany}&limit=${data.limit}&offset=${data.offset}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getAllUserByCompanyIdService", error.response.data);
+    throw error;
+  }
+};
+
+export const QuitCompanyService = async (data, userToken) => {
+  try {
+    const response = await axios.put(
+      `${apiUrl}/company/CancelCompanyByEmployer?userId=${data}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getAllUserByCompanyIdService", error.response.data);
+  }
+};
+
+export const createNewUserByEmployeer = async (data, userToken) => {
+  try {
+    const response = await axios.post(
+      `${apiUrl}/company/CreateEmployee-FromCompany`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getAllUserByCompanyIdService", error.response.data);
+  }
+};
