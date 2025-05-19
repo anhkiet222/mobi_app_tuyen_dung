@@ -91,7 +91,6 @@ const FilterOverlay = React.memo(
           console.error("Error fetching filter data", error);
         }
       };
-      console.log("fetching filter data");
       fetchData();
     }, []);
 

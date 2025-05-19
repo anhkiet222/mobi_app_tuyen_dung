@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
-import AddPost from "../../components/User/AddPost";
+import AddPost from "../../components/Post/AddPost";
 
 const EditCompany = () => {
   const navigation = useNavigation();

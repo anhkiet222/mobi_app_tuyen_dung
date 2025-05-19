@@ -146,7 +146,6 @@ export const getAllPostByAdminService = async (data, userToken) => {
   try {
     const response = await axios.get(
       `${apiUrl}/post/get-list-post-admin?idCompany=${data.idCompany}&limit=${data.limit}&offset=${data.offset}&search=${data.search}&censorCode=${data.censorCode}`,
-      {},
       {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -155,7 +154,7 @@ export const getAllPostByAdminService = async (data, userToken) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error getAllPostByAdminService", error);
+    console.error("Error getAllPostByAdminService", error.response.data);
     throw error;
   }
 };
@@ -202,5 +201,53 @@ export const acceptPostService = async (data, userToken) => {
     return response.data;
   } catch (error) {
     console.error("Error acceptPostService", error);
+  }
+};
+
+export const getListNoteByPost = async (data, userToken) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/post/get-note-by-post?limit=${data.limit}&offset=${data.offset}&id=${data.id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getListNoteByPost", error.response.data);
+  }
+};
+
+export const getAllListCvByPostService = async (data) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/cv/detail/${data.postId}?limit=${data.limit}&offset=${data.offset}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getAllListCvByPostService", error.response.data);
+  }
+};
+
+export const getDetailCvServicebyAdmin = async (id, userToken) => {
+  try {
+    const response = await axios.get(`${apiUrl}/cv/detail/${id}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getDetailCvServicebyAdmin", error.response.data);
+  }
+};
+
+export const getDetailPostByIdService = async (id, userToken) => {
+  try {
+    const response = await axios.get(`${apiUrl}/cv/by-post/${id.postId}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getDetailPostByIdService", error.response.data);
   }
 };

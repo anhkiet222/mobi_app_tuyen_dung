@@ -599,7 +599,7 @@ const AddPost = () => {
             {isLoading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.floatingButtonText}>Lưu</Text>
+              <Text style={styles.floatingButtonText}>Thêm bài đăng </Text>
             )}
           </TouchableOpacity>
 
@@ -673,7 +673,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 15,
-    paddingBottom: 100, // Thêm padding để tránh nút floating che nội dung
+    paddingBottom: 70,
   },
   header: {
     flexDirection: "row",

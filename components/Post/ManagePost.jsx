@@ -315,16 +315,13 @@ const ManagePost = () => {
     const date = moment.unix(item.timeEnd / 1000).format("DD/MM/YYYY");
     return (
       <View style={styles.postItem}>
-        <Text style={styles.postText}>
-          {index + 1 + numberPage * PAGINATION.pagerow}
-        </Text>
-        <Text style={styles.postText}>{item.id}</Text>
-        <Text style={styles.postText}>{item.postName}</Text>
+        <Text style={styles.postText}>Mã bài đăng: {item.id}</Text>
+        <Text style={styles.postText}>Tên bài đăng: {item.postName}</Text>
         {userData?.codeRoleAccount === "ADMIN" && (
-          <Text style={styles.postText}>{item.companyName}</Text>
+          <Text style={styles.postText}>Tên công ty: {item.companyName}</Text>
         )}
-        <Text style={styles.postText}>{item.fullName}</Text>
-        <Text style={styles.postText}>{date}</Text>
+        <Text style={styles.postText}>Tên người đăng: {item.fullName}</Text>
+        <Text style={styles.postText}>Ngày kết thúc: {date}</Text>
         <Text
           style={[
             styles.statusText,
@@ -335,25 +332,35 @@ const ManagePost = () => {
               : styles.statusDanger,
           ]}
         >
-          {item.statusValue}
+          Trạng thái: {item.statusValue}
         </Text>
         <View style={styles.actions}>
-          <TouchableOpacity onPress={() => router.push(`/note/${item.id}`)}>
-            <Text style={styles.actionText}>Chú thích</Text>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => router.push(`/note/${item.id}`)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.actionButtonText}>Chú thích</Text>
           </TouchableOpacity>
+
           {(userData?.codeRoleAccount === "COMPANY" ||
             userData?.codeRoleAccount === "EMPLOYER") && (
             <TouchableOpacity
-              onPress={() => router.push(`/list-cv/${item.id}`)}
+              style={styles.actionButton}
+              onPress={() => router.push(`/listcv/${item.id}`)}
+              activeOpacity={0.7}
             >
-              <Text style={styles.actionText}>Xem CV nộp</Text>
+              <Text style={styles.actionButtonText}>Xem CV nộp</Text>
             </TouchableOpacity>
           )}
+
           {item.statusCode !== "PS4" && (
             <TouchableOpacity
+              style={styles.actionButton}
               onPress={() => router.push(`/edit-post/${item.id}`)}
+              activeOpacity={0.7}
             >
-              <Text style={styles.actionText}>
+              <Text style={styles.actionButtonText}>
                 {userData?.codeRoleAccount === "ADMIN" ||
                 userData?.codeRoleAccount === "EMPLOYER"
                   ? "Xem chi tiết"
@@ -361,42 +368,53 @@ const ManagePost = () => {
               </Text>
             </TouchableOpacity>
           )}
+
           {userData?.codeRoleAccount === "ADMIN" && (
             <>
               {item.statusCode === "PS1" ? (
                 <TouchableOpacity
+                  style={styles.actionButton}
                   onPress={() => {
                     setModalPostId(item.id);
                     setModalAction(() => handleBanPost);
                     setModalVisible(true);
                   }}
+                  activeOpacity={0.7}
                 >
-                  <Text style={styles.actionText}>Chặn</Text>
+                  <Text style={styles.actionButtonText}>Chặn</Text>
                 </TouchableOpacity>
               ) : item.statusCode === "PS4" ? (
                 <TouchableOpacity
+                  style={styles.actionButton}
                   onPress={() => {
                     setModalPostId(item.id);
                     setModalAction(() => handleActivePost);
                     setModalVisible(true);
                   }}
+                  activeOpacity={0.7}
                 >
-                  <Text style={styles.actionText}>Mở lại</Text>
+                  <Text style={styles.actionButtonText}>Mở lại</Text>
                 </TouchableOpacity>
               ) : (
                 <>
-                  <TouchableOpacity onPress={() => confirmPost(item.id)}>
-                    <Text style={styles.actionText}>Duyệt</Text>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => confirmPost(item.id)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.actionButtonText}>Duyệt</Text>
                   </TouchableOpacity>
                   {item.statusCode !== "PS2" && (
                     <TouchableOpacity
+                      style={styles.actionButton}
                       onPress={() => {
                         setModalPostId(item.id);
                         setModalAction(() => () => handleAcceptPost("PS2"));
                         setModalVisible(true);
                       }}
+                      activeOpacity={0.7}
                     >
-                      <Text style={styles.actionText}>Từ chối</Text>
+                      <Text style={styles.actionButtonText}>Từ chối</Text>
                     </TouchableOpacity>
                   )}
                 </>
@@ -421,16 +439,6 @@ const ManagePost = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <Text style={styles.backText}>← Quay lại</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Danh sách bài đăng</Text>
-      </View>
-
       <View style={styles.filterContainer}>
         <View style={styles.searchContainer}>
           <TextInput
@@ -552,19 +560,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 15,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  backButton: {
-    padding: 10,
-  },
-  backText: {
-    color: "#ff0000",
-    fontSize: 16,
-    fontWeight: "500",
-  },
   title: {
     fontSize: 22,
     fontWeight: "bold",
@@ -659,7 +654,24 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 5,
+    justifyContent: "flex-start",
+    marginTop: 10,
+  },
+  actionButton: {
+    backgroundColor: "#4B49AC",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginRight: 8,
+    marginBottom: 8,
+    minWidth: 80,
+    alignItems: "center",
+  },
+  actionButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "500",
+    textAlign: "center",
   },
   actionText: {
     color: "#4B49AC",
