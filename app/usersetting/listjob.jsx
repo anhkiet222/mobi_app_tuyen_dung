@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react'
-import ManageCv from '../../components/User/ManageCv'
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from 'expo-router'
+import React, { useEffect } from "react";
+import ManageCv from "../../components/Cv/ManageCv";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "expo-router";
 
 const Listjob = () => {
   const navigation = useNavigation();
@@ -9,8 +9,8 @@ const Listjob = () => {
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerTitle: 'Danh sách công việc đã ứng tuyển',
-      headerTitleAlign: 'center',
+      headerTitle: "Danh sách công việc đã ứng tuyển",
+      headerTitleAlign: "center",
       headerBackTitleVisible: false,
       headerLeft: () => (
         <Ionicons
@@ -20,14 +20,14 @@ const Listjob = () => {
           onPress={() => navigation.goBack()}
         />
       ),
-    })
+    });
   });
 
   return (
     <>
       <ManageCv />
     </>
-  )
-}
+  );
+};
 
-export default Listjob
+export default Listjob;

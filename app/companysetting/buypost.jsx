@@ -1,14 +1,14 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
-import ListCv from "../../components/Cv/ListCv";
+import BuyPost from "../../components/Post/BuyPost";
 
-const ListCvScreen = () => {
+const BuyPostScreen = () => {
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerTitle: "Danh sách CV",
+      headerTitle: "Mua lượt đăng bài viết",
       headerTitleAlign: "center",
       headerBackTitleVisible: false,
       headerLeft: () => (
@@ -23,9 +23,9 @@ const ListCvScreen = () => {
   });
   return (
     <>
-      <ListCv />
+      <BuyPost />
     </>
   );
 };
 
-export default ListCvScreen;
+export default BuyPostScreen;

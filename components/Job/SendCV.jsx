@@ -15,7 +15,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { AuthContext } from "../AuthContext";
 import { createCV } from "../../api/jobApi";
 import { getDetailUserById } from "../../api/userApi";
-import { sendEmail } from "../../api/emailapi";
+import { sendEmail } from "../../api/emailApi";
 import "react-native-polyfill-globals";
 
 const SendCV = ({
@@ -172,7 +172,7 @@ const SendCV = ({
     }
   };
 
-  
+
   if (loading) {
     return (
       <Modal visible={loading} transparent>
@@ -182,7 +182,7 @@ const SendCV = ({
       </Modal>
     );
   }
-  
+
   return (
     <Modal visible={isOpen} animationType="slide" transparent>
       <View style={styles.container}>

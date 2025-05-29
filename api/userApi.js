@@ -11,7 +11,7 @@ export const loginUser = async (phonenumber, password) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error Login Failed", error);
+    console.error("Error Login Failed", error.response.data);
     throw error;
   }
 };
@@ -282,6 +282,68 @@ export const getUsersByCategory = async (categoryJobCode, userToken) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching users by category:", error);
+    throw error;
+  }
+};
+
+export const getPackageByType = async (isHot, userToken) => {
+  try {
+    const response = await axios.get(
+      `http://171.244.40.25:8080/app-tuyen-dung/api/v1/package/get-package-by-Type?isHot=${isHot}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getPackageByType", error.response.data);
+    throw error;
+  }
+};
+
+export const getPaymentLink = async (id, amount, userToken) => {
+  try {
+    const response = await axios.get(
+      `http://171.244.40.25:8080/app-tuyen-dung/api/v1/payment/get-payment-link?id=${id}&amount=${amount}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getPaymentLink", error);
+    throw error;
+  }
+};
+
+export const getPhoneByUserId = async (userId, userToken) => {
+  try {
+    const response = await axios.get(`/user/phone/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching phone numbers by company ID:", error);
+    throw error;
+  }
+};
+
+export const sendUserNotification = async (payload, userToken) => {
+  try {
+    const response = await axios.post(`/notification/sendUser`, payload, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi gửi thông báo:", error);
     throw error;
   }
 };

@@ -28,7 +28,7 @@ const ListCv = () => {
   const fetchPost = async (idCv) => {
     try {
       const res = await getDetailCvServicebyAdmin(idCv, userToken);
-      if (res && res?.data?.code === 200) {
+      if (res?.data && res?.data?.code === 200) {
         setPost(res.data.result.name || "");
       }
     } catch (error) {
@@ -102,7 +102,7 @@ const ListCv = () => {
       <Text style={styles.cvText}>Trạng thái: {item.status}</Text>
       <TouchableOpacity
         style={styles.actionButton}
-        onPress={() => router.push(`/admin/admin-cv/${item.idCv}`)}
+        onPress={() => router.push(`/detailcv/${item.idCv}`)}
         activeOpacity={0.7}
       >
         <Text style={styles.actionButtonText}>Xem CV</Text>

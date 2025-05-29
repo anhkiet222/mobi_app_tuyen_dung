@@ -29,7 +29,6 @@ export const getCompany = async (params) => {
 };
 export const DetailCompany = async (companyid) => {
   try {
-    console.log(`${apiUrl}/company/get_company/${companyid}`);
     const response = await axios.get(
       `${apiUrl}/company/get_company/${companyid}`
     );

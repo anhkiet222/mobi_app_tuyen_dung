@@ -3,7 +3,7 @@ import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import EmployerInfo from "../../components/User/EmployerInfo";
 
-const Userinfo = () => {
+const CompanyInfo = () => {
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
@@ -28,4 +28,4 @@ const Userinfo = () => {
   );
 };
 
-export default Userinfo;
+export default CompanyInfo;

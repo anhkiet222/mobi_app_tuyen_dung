@@ -3,7 +3,7 @@ import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import ManagePost from "../../components/Post/ManagePost";
 
-const EditCompany = () => {
+const ManagePostScreen = () => {
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
@@ -28,4 +28,4 @@ const EditCompany = () => {
   );
 };
 
-export default EditCompany;
+export default ManagePostScreen;

@@ -1,5 +1,5 @@
 import { Picker } from "@react-native-picker/picker";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 import MarkdownIt from "markdown-it";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
@@ -78,6 +78,7 @@ const AddPost = () => {
   useEffect(() => {
     const fetchCompany = async (userId, companyId = null) => {
       try {
+        setIsLoading(true);
         const res = await getDetailCompanyByUserId(
           userId,
           companyId,
@@ -92,6 +93,8 @@ const AddPost = () => {
         }
       } catch (error) {
         console.error("Error fetching company:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -106,6 +109,7 @@ const AddPost = () => {
 
   const fetchPost = async (postId) => {
     try {
+      setIsLoading(true);
       const res = await getDetailToEditPostService(postId, userToken);
       if (res.errCode === 0) {
         setInputValues({
@@ -132,6 +136,8 @@ const AddPost = () => {
     } catch (error) {
       console.error("Error fetching post:", error);
       Alert.alert("Lỗi", "Lỗi khi lấy thông tin bài đăng");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -342,13 +348,22 @@ const AddPost = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {inputValues.isActionADD && userData?.codeRoleAccount !== "ADMIN" && (
           <View style={styles.companyInfo}>
-            <Text style={styles.companyInfoTitle}>Công ty còn:</Text>
-            <Text style={styles.companyInfoText}>
-              {companyPostAllow.nonHot} bài bình thường
-            </Text>
-            <Text style={styles.companyInfoText}>
-              {companyPostAllow.hot} bài nổi bật
-            </Text>
+            <View>
+              <Text style={styles.companyInfoTitle}>Công ty còn:</Text>
+              <Text style={styles.companyInfoText}>
+                {companyPostAllow.nonHot} bài bình thường
+              </Text>
+              <Text style={styles.companyInfoText}>
+                {companyPostAllow.hot} bài nổi bật
+              </Text>
+            </View>
+            <View style={styles.viewPostContainer}>
+              <TouchableOpacity
+                onPress={() => router.push(`/companysetting/buypost`)}
+              >
+                <Text style={styles.viewPost}>Mua thêm lượt đăng bài</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
 
@@ -617,7 +632,6 @@ const AddPost = () => {
         </View>
       )}
 
-      {/* Modal để chọn ngày đăng lại */}
       {reupModalVisible && (
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -697,6 +711,19 @@ const styles = StyleSheet.create({
   },
   companyInfo: {
     marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  viewPostContainer: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 8,
+  },
+  viewPost: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "500",
   },
   companyInfoTitle: {
     fontSize: 18,

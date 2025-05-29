@@ -233,7 +233,7 @@ export const getDetailCvServicebyAdmin = async (id, userToken) => {
         Authorization: `Bearer ${userToken}`,
       },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error getDetailCvServicebyAdmin", error.response.data);
   }
@@ -249,5 +249,22 @@ export const getDetailPostByIdService = async (id, userToken) => {
     return response.data;
   } catch (error) {
     console.error("Error getDetailPostByIdService", error.response.data);
+  }
+};
+
+export const getHistoryTradePost = async (data, userToken) => {
+  try {
+    const response = await axios.get(
+      `http://171.244.40.25:8080/app-tuyen-dung/api/v1/order-package-post/get-history-trade-post?limit=${data.limit}&offset=${data.offset}&fromDate=${data.fromDate}&toDate=${data.toDate}&companyId=${data.companyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error getHistoryTradePost", error);
+    throw error;
   }
 };

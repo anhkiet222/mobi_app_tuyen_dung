@@ -36,7 +36,7 @@ const ManagePost = () => {
   const [count, setCount] = useState(0);
   const [numberPage, setNumberPage] = useState(0);
   const [search, setSearch] = useState("");
-  const [censorCode, setCensorCode] = useState("PS3");
+  const [censorCode, setCensorCode] = useState("");
   const [total, setTotal] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAction, setModalAction] = useState(null);
@@ -162,7 +162,7 @@ const ManagePost = () => {
 
   const handleOnChangeCensor = (value) => {
     setCensorCode(value);
-    setNumberPage(0); // Reset page về 0 khi thay đổi bộ lọc
+    setNumberPage(0);
   };
 
   const handleBanPost = async () => {
@@ -357,7 +357,7 @@ const ManagePost = () => {
           {item.statusCode !== "PS4" && (
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => router.push(`/edit-post/${item.id}`)}
+              onPress={() => router.push(`/companysetting/${item.id}`)}
               activeOpacity={0.7}
             >
               <Text style={styles.actionButtonText}>

@@ -103,6 +103,7 @@ const ForgetPassword = () => {
           <Text style={styles.buttonText}>Xác nhận</Text>
         </TouchableOpacity>
 
+
         <View style={styles.footerLinks}>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Text style={styles.footerText}>Chưa có tài khoản?</Text>
