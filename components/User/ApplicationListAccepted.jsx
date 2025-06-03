@@ -326,6 +326,12 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "100%",
   },
+  datePickerText: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 4,
+  },
   confirmButton: {
     backgroundColor: "#4CAF50",
     paddingVertical: 10,
