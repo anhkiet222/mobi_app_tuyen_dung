@@ -87,7 +87,7 @@ const ApplicationListAccepted = ({ currentPage, setCount, setLoading }) => {
   };
 
   const handleConfirmDate = (selectedDate) => {
-    setInterviewTime(dayjs(selectedDate).format("YYYY-MM-DDTHH:mm"));
+    setInterviewTime(dayjs(selectedDate).toISOString());
     hideDatePicker();
   };
 
@@ -103,15 +103,15 @@ const ApplicationListAccepted = ({ currentPage, setCount, setLoading }) => {
           userToken
         );
         console.log("🚀 ~ handleScheduleInterview ~ res:", res);
-        // if (res) {
-        //   setModalLoading(false);
-        //   handleCloseModal();
-        //   fetchAcceptedCVs(currentPage);
-        //   Alert.alert("Thành công", "Lên lịch phỏng vấn thành công!");
-        // } else {
-        //   setModalLoading(false);
-        //   Alert.alert("Lỗi", "Lên lịch phỏng vấn thất bại!");
-        // }
+        if (res && res.status === 200) {
+          setModalLoading(false);
+          handleCloseModal();
+          await fetchAcceptedCVs(currentPage);
+          Alert.alert("Thành công", "Lên lịch phỏng vấn thành công!");
+        } else {
+          setModalLoading(false);
+          Alert.alert("Lỗi", "Lên lịch phỏng vấn thất bại!");
+        }
       } catch (error) {
         console.log("Error scheduling interview:", error);
         setModalLoading(false);
