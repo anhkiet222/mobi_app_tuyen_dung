@@ -357,7 +357,7 @@ const ManagePost = () => {
           {item.statusCode !== "PS4" && (
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => router.push(`/companysetting/${item.id}`)}
+              onPress={() => router.push(`/post/${item.id}`)}
               activeOpacity={0.7}
             >
               <Text style={styles.actionButtonText}>

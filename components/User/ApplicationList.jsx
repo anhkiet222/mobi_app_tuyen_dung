@@ -22,6 +22,8 @@ import {
   reviewCVService,
 } from "../../api/CvApi";
 import ApplicationListUnderReview from "./ApplicationListUnderReview";
+import ApplicationListAccepted from "./ApplicationListAccepted";
+import ApplicationListRejected from "./ApplicationListRejected";
 
 const ApplicationList = () => {
   const { userData, userToken } = useContext(AuthContext);
@@ -29,11 +31,11 @@ const ApplicationList = () => {
   const [dataCv, setDataCv] = useState([]);
   const [count, setCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [selectedStatus, setSelectedStatus] = useState("new");
+  const [selectedStatus, setSelectedStatus] = useState("pending");
   const [loading, setLoading] = useState(false);
 
   const statuses = [
-    { label: "Ứng tuyển mới", value: "new" },
+    { label: "Ứng tuyển mới", value: "pending" },
     { label: "Đã xem xét", value: "under-review" },
     { label: "Đã chấp nhận", value: "accepted" },
     { label: "Đã từ chối", value: "rejected" },
@@ -198,7 +200,7 @@ const ApplicationList = () => {
           >
             <Text style={styles.actionButtonText}>Xem CV</Text>
           </TouchableOpacity>
-          {selectedStatus === "new" && (
+          {selectedStatus === "pending" && (
             <>
               <TouchableOpacity
                 style={[styles.actionButton, styles.reviewButton]}
@@ -227,7 +229,7 @@ const ApplicationList = () => {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case "new":
+      case "pending":
         return { backgroundColor: "#ffc107", color: "#fff" };
       case "under-review":
         return { backgroundColor: "#17a2b8", color: "#fff" };
@@ -267,7 +269,23 @@ const ApplicationList = () => {
           </View>
 
           {selectedStatus === "under-review" ? (
-            <ApplicationListUnderReview />
+            <ApplicationListUnderReview
+              currentPage={currentPage}
+              setCount={setCount}
+              setLoading={setLoading}
+            />
+          ) : selectedStatus === "accepted" ? (
+            <ApplicationListAccepted
+              currentPage={currentPage}
+              setCount={setCount}
+              setLoading={setLoading}
+            />
+          ) : selectedStatus === "rejected" ? (
+            <ApplicationListRejected
+              currentPage={currentPage}
+              setCount={setCount}
+              setLoading={setLoading}
+            />
           ) : (
             <FlatList
               data={dataCv}

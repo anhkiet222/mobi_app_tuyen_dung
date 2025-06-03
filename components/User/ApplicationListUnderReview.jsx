@@ -1,30 +1,27 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useRouter } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   Alert,
   FlatList,
-  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { AuthContext } from "../AuthContext";
-import { PAGINATION } from "../../constants/Pagination";
 import {
-  getCVsByStatusService,
   acceptCVService,
+  getCVsByStatusService,
   rejectCVService,
 } from "../../api/CvApi";
 import { DetailCompany } from "../../api/companyApi";
 import { getPhoneByUserId, sendUserNotification } from "../../api/userApi";
-import { Linking } from "react-native";
+import { PAGINATION } from "../../constants/Pagination";
+import { AuthContext } from "../AuthContext";
 
-const ApplicationListUnderReview = () => {
+const ApplicationListUnderReview = ({ currentPage, setCount, setLoading }) => {
   const { userData, userToken } = useContext(AuthContext);
   const [dataCv, setDataCv] = useState([]);
-  const [count, setCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchUnderReviewCVs(currentPage);
@@ -104,11 +101,6 @@ const ApplicationListUnderReview = () => {
     }
   };
 
-  const handleChangePage = (newPage) => {
-    if (newPage < 0 || newPage >= count) return;
-    setCurrentPage(newPage);
-  };
-
   const handleAccept = async (cv) => {
     try {
       const res = await acceptCVService(cv.id, userToken);
@@ -183,9 +175,7 @@ const ApplicationListUnderReview = () => {
               Không có ứng viên nào được xem xét. Tìm kiếm ứng viên{" "}
               <Text
                 style={styles.linkText}
-                onPress={() =>
-                  Linking.openURL("http://localhost:3002/admin/list-candiate/")
-                }
+                onPress={() => router.push(`/companysetting/findcadidate`)}
               >
                 Tại đây!
               </Text>
@@ -194,36 +184,6 @@ const ApplicationListUnderReview = () => {
         }
         contentContainerStyle={styles.listContainer}
       />
-      <View style={styles.pagination}>
-        <TouchableOpacity
-          style={[
-            styles.pageButton,
-            currentPage === 0 && styles.disabledButton,
-          ]}
-          onPress={() => handleChangePage(currentPage - 1)}
-          disabled={currentPage === 0}
-        >
-          <Text style={styles.pageButtonText}>Quay lại</Text>
-        </TouchableOpacity>
-        <Text style={styles.pageText}>
-          Trang {currentPage + 1} / {count || 1}
-        </Text>
-        <TouchableOpacity
-          style={[
-            styles.pageButton,
-            currentPage >= count - 1 && styles.disabledButton,
-          ]}
-          onPress={() => handleChangePage(currentPage + 1)}
-          disabled={currentPage >= count - 1}
-        >
-          <Text style={styles.pageButtonText}>Tiếp</Text>
-        </TouchableOpacity>
-      </View>
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#007bff" />
-        </View>
-      )}
     </View>
   );
 };
@@ -289,36 +249,6 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#007bff",
     textDecorationLine: "underline",
-  },
-  pagination: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  pageButton: {
-    backgroundColor: "#007bff",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
-  pageButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  disabledButton: {
-    backgroundColor: "#ccc",
-  },
-  pageText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 

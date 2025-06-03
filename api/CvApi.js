@@ -159,3 +159,20 @@ export const getCVsByStatusService = async (idCompany, data, userToken) => {
     throw error;
   }
 };
+
+export const scheduleInterviewService = async (data, userToken) => {
+  try {
+    const response = await axios.put(`${apiUrl}/cv/schedule-interview`, data, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+      timeout: 10000, // 10 seconds timeout
+      maxContentLength: 300000000, // 200 MB max content length
+    });
+    console.log("🚀 ~ scheduleInterviewService ~ response:", response);
+    return "ok";
+  } catch (error) {
+    console.error("Error scheduleInterviewService", error);
+    throw error;
+  }
+};

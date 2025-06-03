@@ -94,7 +94,6 @@ const ManageEmployer = () => {
 
   const renderUserItem = ({ item, index }) => {
     const date = moment.unix(item?.birthday / 1000).format("DD/MM/YYYY");
-    // const rowNumber = index + 1 + currentPage * PAGINATION.pagerow;
 
     return (
       <View style={styles.card}>
@@ -102,7 +101,6 @@ const ManageEmployer = () => {
           <Text
             style={styles.cardTitle}
           >{`${item.firstName} ${item.lastName}`}</Text>
-          {/* <Text style={styles.cardSubtitle}>STT: {rowNumber}</Text> */}
         </View>
         <View style={styles.cardDetails}>
           <Text style={styles.detailText}>SĐT: {item.phoneNumber}</Text>
@@ -164,7 +162,6 @@ const ManageEmployer = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Danh sách nhân viên</Text>
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007bff" />
@@ -174,6 +171,8 @@ const ManageEmployer = () => {
           <FlatList
             data={dataUser}
             renderItem={renderUserItem}
+            showVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.userId}-${index}`}
             contentContainerStyle={styles.listContent}
           />
@@ -248,10 +247,12 @@ const styles = StyleSheet.create({
   },
   cardActions: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     marginTop: 10,
   },
   quitButton: {
+    width: "100%",
+    textAlign: "center",
     backgroundColor: "#4B49AC",
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -261,6 +262,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "500",
+    textAlign: "center",
   },
   listContent: {
     paddingBottom: 80,

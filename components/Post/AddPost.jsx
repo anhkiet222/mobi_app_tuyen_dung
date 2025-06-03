@@ -1,5 +1,5 @@
 import { Picker } from "@react-native-picker/picker";
-import { router, useRouter } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import MarkdownIt from "markdown-it";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
@@ -65,7 +65,7 @@ const AddPost = () => {
   const [reupDate, setReupDate] = useState(null);
   const [reupDatePickerVisible, setReupDatePickerVisible] = useState(false);
   const route = useRouter();
-  const { id } = route.params || {};
+  const { postId } = useLocalSearchParams();
 
   const { dataJobLevel: dataJobLevels } = useFetchDataJobLevel();
   const { dataGenderPost: dataGenderPosts } = useFetchDataGenderPost();
@@ -102,10 +102,10 @@ const AddPost = () => {
       fetchCompany(userData.id);
     }
 
-    if (id) {
-      fetchPost(id);
+    if (postId) {
+      fetchPost(postId);
     }
-  }, [userData, userToken, id]);
+  }, [userData, userToken, postId]);
 
   const fetchPost = async (postId) => {
     try {
@@ -129,9 +129,18 @@ const AddPost = () => {
           isActionADD: false,
           id: res.data.id || "",
         });
-        setTimeEnd(
-          res.data.timeEndValue ? new Date(res.data.timeEndValue) : null
-        );
+        let validTimeEnd = null;
+        if (res.data.timeEndValue) {
+          const timestamp = Number(res.data.timeEndValue);
+          const momentDate = moment.unix(timestamp / 1000);
+          validTimeEnd = momentDate.toDate();
+          const maxFutureDate = moment().add(10, "years").toDate();
+          if (isNaN(validTimeEnd.getTime()) || validTimeEnd > maxFutureDate) {
+
+            validTimeEnd = new Date();
+          }
+        }
+        setTimeEnd(validTimeEnd);
       }
     } catch (error) {
       console.error("Error fetching post:", error);
@@ -314,7 +323,7 @@ const AddPost = () => {
       const res = await reupPostService(
         {
           userId: userData?.id,
-          postId: id,
+          postId: postId,
           timeEnd: reupDate.getTime(),
         },
         userToken
@@ -617,8 +626,7 @@ const AddPost = () => {
               <Text style={styles.floatingButtonText}>Thêm bài đăng </Text>
             )}
           </TouchableOpacity>
-
-          {id &&
+          {postId &&
             userData?.codeRoleAccount !== "ADMIN" &&
             userData?.codeRoleAccount !== "EMPLOYER" &&
             new Date().getTime() > new Date(timeEnd).getTime() && (
