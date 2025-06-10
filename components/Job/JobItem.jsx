@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
+  FlatList,
 } from "react-native";
 import FilterOverlay from "./FilterOverlay";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -19,8 +20,8 @@ const JobItem = () => {
   const router = useRouter();
   const [post, setPost] = useState([]);
   const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [loadingJob, setLoadingJob] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(0);
   const [filterVisible, setFilterVisible] = useState(false);
   const [search, setSearch] = useState("");
@@ -33,76 +34,103 @@ const JobItem = () => {
     categoryWorktypeCode: [],
     addressCode: [],
   });
+  const flatListRef = useRef(null);
 
-  const loadPost = async (reset = false, currentFilters = filters) => {
-    if (loading || loadingJob) return;
+  const loadPost = useCallback(
+    async (reset = false, currentFilters = filters) => {
+      if (isLoading || isLoadingMore) return;
 
-    if (reset) {
-      setLoading(true);
-    } else {
-      setLoadingJob(true);
-    }
-
-    let params = {
-      offset: reset ? 0 : page,
-      limit: 10,
-      name: search ? search : null,
-      ...currentFilters,
-    };
-
-    Object.keys(params).forEach((key) => {
-      if (Array.isArray(params[key])) {
-        params[key] = params[key].join(",");
-      }
-    });
-
-    try {
-      const response = await FilterJob(params);
-      if (response && response.content) {
-        if (reset) {
-          setPost(response.content);
-        } else {
-          setPost((prevPosts) => [...prevPosts, ...response.content]);
-        }
-        setCount(response.totalElements);
-        if (response.content.length < 10) {
-          setIsEnd(true);
-        } else {
-          setPage((prevPage) => prevPage + 1);
-          setIsEnd(false);
-        }
+      if (reset) {
+        setIsLoading(true);
       } else {
-        console.error("No data found in response.content");
+        setIsLoadingMore(true);
       }
-    } catch (error) {
-      console.error("Error fetching feature data", error);
-    } finally {
-      setLoading(false);
-      setLoadingJob(false);
-    }
-  };
 
-  const handleSearch = () => {
+      let params = {
+        offset: reset ? 0 : page,
+        limit: 10,
+        name: search.trim() || null,
+        ...currentFilters,
+      };
+
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].join(",");
+        }
+      });
+
+      try {
+        const response = await FilterJob(params);
+        if (response && response.content) {
+          if (reset) {
+            setPost(response.content);
+            setPage(1);
+          } else {
+            setPost((prevPosts) => [...prevPosts, ...response.content]);
+            setPage((prevPage) => prevPage + 1);
+          }
+          setCount(response.totalElements);
+          setIsEnd(response.content.length < 10);
+        } else {
+          setPost([]);
+          setIsEnd(true);
+        }
+      } catch (error) {
+        console.error("Error fetching job data:", error);
+      } finally {
+        if (reset) {
+          setIsLoading(false);
+        } else {
+          setIsLoadingMore(false);
+        }
+      }
+    },
+    [isLoading, isLoadingMore, page, search, filters]
+  );
+
+  useEffect(() => {
     loadPost(true);
-  };
+  }, []);
 
-  const handleLoadMore = () => {
-    if (!isEnd && !loading && !loadingJob) {
-      loadPost();
+  const handleSearch = useCallback(() => {
+    loadPost(true);
+  }, [loadPost]);
+
+  const handleLoadMore = useCallback(() => {
+    if (!isEnd && !isLoading && !isLoadingMore) {
+      loadPost(false);
     }
-  };
+  }, [isEnd, isLoading, isLoadingMore, loadPost]);
 
-  const applyFilters = (newFilters) => {
-    setFilters(newFilters);
-    loadPost(true, newFilters);
-  };
+  const applyFilters = useCallback(
+    (newFilters) => {
+      setFilters(newFilters);
+      loadPost(true, newFilters);
+    },
+    [loadPost]
+  );
+
   const handlePress = useCallback((id) => {
     router.push(`/detailjob/${id}`);
-  });
+  }, []);
 
-  if (loading) {
+  const renderFooter = () => {
+    if (isLoadingMore) {
+      return (
+        <View style={styles.footer}>
+          <ActivityIndicator size="small" color="#0000ff" />
+        </View>
+      );
+    }
+    if (isEnd && post.length > 0) {
+      return;
+    }
+    return null;
+  };
+
+  if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -131,13 +159,16 @@ const JobItem = () => {
               placeholderTextColor="gray"
               value={search}
               onChangeText={setSearch}
-              returnKeyType="Tìm"
+              returnKeyType="search"
               onSubmitEditing={handleSearch}
             />
             {search.length > 0 && (
               <TouchableOpacity
                 style={styles.clearIconContainer}
-                onPress={() => setSearch("")}
+                onPress={() => {
+                  setSearch("");
+                  handleSearch();
+                }}
               >
                 <Ionicons
                   name="close"
@@ -158,18 +189,25 @@ const JobItem = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {post.length === 0 && !loadingJob && loading && (
-        <View style={styles.noDataContainer}>
-          <Text style={styles.noDataText}>Không có dữ liệu tìm kiếm</Text>
-        </View>
-      )}
-      <JobList
-        post={post}
-        loading={loadingJob}
-        handleLoadMore={handleLoadMore}
-        handlePress={handlePress}
+      <FlatList
+        ref={flatListRef}
+        data={post}
+        renderItem={({ item }) => (
+          <JobList post={[item]} handlePress={handlePress} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={21}
+        ListEmptyComponent={
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>Không có dữ liệu tìm kiếm</Text>
+          </View>
+        }
       />
-
       <FilterOverlay
         visible={filterVisible}
         onClose={() => setFilterVisible(false)}
@@ -180,15 +218,6 @@ const JobItem = () => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingBottom: 10,
-    paddingTop: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-  },
   searchContainer: {
     marginBottom: 10,
     flexDirection: "row",
@@ -196,13 +225,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 10,
     marginHorizontal: 15,
-  },
-  userIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#ddd",
   },
   search: {
     flex: 1,
@@ -227,16 +249,26 @@ const styles = StyleSheet.create({
   clearIconContainer: {
     marginLeft: 10,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  footer: {
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   noDataContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   noDataText: {
     fontSize: 16,
-    color: 'gray',
-  }
+    color: "gray",
+  },
 });
 
 export default JobItem;

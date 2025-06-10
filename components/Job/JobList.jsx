@@ -60,7 +60,7 @@ const JobList = React.memo(({ post, loading, handleLoadMore, handlePress }) => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 10 }}>
+    <View style={{ flex: 1, paddingHorizontal: 10 }}>
       <FlatList
         data={post}
         keyExtractor={(item) => item.id.toString()}
@@ -77,53 +77,98 @@ const JobList = React.memo(({ post, loading, handleLoadMore, handlePress }) => {
                 </View>
                 <View style={styles.title}>
                   <View style={styles.itemTitle}>
-                    <Text style={styles.textName}>
-                      {item.postDetailData.name}
+                    <Text
+                      style={styles.textName}
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                    >
+                      {item.postDetailData?.name || "N/A"}
                     </Text>
                   </View>
                   <View style={styles.task}>
-                    <Text style={styles.textcateJob}>
-                      <Foundation
-                        name="torso-business"
-                        size={13}
-                        color="white"
-                      />{" "}
-                      {item.postDetailData.jobLevelPostData.value}
-                    </Text>
-                    <Text style={styles.textExJob}>
-                      <FontAwesome5
-                        name="business-time"
-                        size={13}
-                        color="white"
-                      />{" "}
-                      {item.postDetailData.expTypePostData.value}
-                    </Text>
-                    <Text style={styles.textMoney}>
-                      <FontAwesome5
-                        name="money-bill-wave"
-                        size={13}
-                        color="white"
-                      />{" "}
-                      {item.postDetailData.salaryTypePostData.value}
-                    </Text>
+                    <View style={styles.taskItem}>
+                      <Text
+                        style={styles.textcateJob}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        <Foundation
+                          name="torso-business"
+                          size={13}
+                          color="white"
+                        />{" "}
+                        {item.postDetailData?.jobLevelPostData?.value || "N/A"}
+                      </Text>
+                    </View>
+                    <View style={styles.taskItem}>
+                      <Text
+                        style={styles.textExJob}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        <FontAwesome5
+                          name="business-time"
+                          size={13}
+                          color="white"
+                        />{" "}
+                        {item.postDetailData?.expTypePostData?.value || "N/A"}
+                      </Text>
+                    </View>
+                    <View style={styles.taskItem}>
+                      <Text
+                        style={styles.textMoney}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        <FontAwesome5
+                          name="money-bill-wave"
+                          size={13}
+                          color="white"
+                        />{" "}
+                        {item.postDetailData?.salaryTypePostData?.value ||
+                          "N/A"}
+                      </Text>
+                    </View>
                   </View>
                   <View style={styles.task}>
-                    <Text style={styles.textAdd}>
-                      <FontAwesome5
-                        name="map-marker-alt"
-                        size={13}
-                        color="white"
-                      />{" "}
-                      {item.postDetailData.provincePostData.value}
-                    </Text>
-                    <Text style={styles.textWorkJob}>
-                      <FontAwesome5 name="user-clock" size={13} color="white" />{" "}
-                      {item.postDetailData.workTypePostData.value}
-                    </Text>
-                    <Text style={styles.textSex}>
-                      <FontAwesome name="intersex" size={13} color="white" />{" "}
-                      {item.postDetailData.genderPostData.value}
-                    </Text>
+                    <View style={styles.taskItem}>
+                      <Text
+                        style={styles.textAdd}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        <FontAwesome5
+                          name="map-marker-alt"
+                          size={13}
+                          color="white"
+                        />{" "}
+                        {item.postDetailData?.provincePostData?.value || "N/A"}
+                      </Text>
+                    </View>
+                    <View style={styles.taskItem}>
+                      <Text
+                        style={styles.textWorkJob}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        <FontAwesome5
+                          name="user-clock"
+                          size={13}
+                          color="white"
+                        />{" "}
+                        {item.postDetailData?.workTypePostData?.value || "N/A"}
+                      </Text>
+                    </View>
+                    <View style={styles.taskItem}>
+                      <Text
+                        style={styles.textSex}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        <FontAwesome name="intersex" size={13} color="white" />{" "}
+                        {item.postDetailData?.genderPostData?.value || "N/A"}
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -170,6 +215,7 @@ const styles = StyleSheet.create({
   },
   title: {
     width: "70%",
+    flexShrink: 1,
   },
   image: {
     width: "100%",
@@ -185,10 +231,20 @@ const styles = StyleSheet.create({
     fontSize: 17,
     textAlign: "center",
   },
+  task: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    paddingHorizontal: 5,
+  },
+  taskItem: {
+    flex: 1,
+    marginHorizontal: 5,
+    minWidth: 0,
+  },
   textAdd: {
     padding: 5,
     borderRadius: 10,
-    overflow: "hidden",
     fontSize: 10,
     color: "white",
     textAlign: "center",
@@ -197,7 +253,6 @@ const styles = StyleSheet.create({
   textMoney: {
     padding: 5,
     borderRadius: 10,
-    overflow: "hidden",
     fontSize: 10,
     color: "white",
     textAlign: "center",
@@ -206,21 +261,14 @@ const styles = StyleSheet.create({
   textSex: {
     padding: 5,
     borderRadius: 10,
-    overflow: "hidden",
     fontSize: 10,
     color: "white",
     textAlign: "center",
     backgroundColor: "#6F42C1",
   },
-  task: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-  },
   textcateJob: {
     padding: 5,
     borderRadius: 10,
-    overflow: "hidden",
     fontSize: 10,
     color: "white",
     textAlign: "center",
@@ -229,7 +277,6 @@ const styles = StyleSheet.create({
   textExJob: {
     padding: 5,
     borderRadius: 10,
-    overflow: "hidden",
     fontSize: 10,
     color: "white",
     textAlign: "center",
@@ -238,7 +285,6 @@ const styles = StyleSheet.create({
   textWorkJob: {
     padding: 5,
     borderRadius: 10,
-    overflow: "hidden",
     fontSize: 10,
     color: "white",
     textAlign: "center",

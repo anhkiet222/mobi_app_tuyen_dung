@@ -43,7 +43,7 @@ const CategoryJob = () => {
           onPress={() =>
             router.push({
               pathname: `/categorylist/${item.value}`,
-              params: item.code,
+              params: { code: item.code },
             })
           }
         >

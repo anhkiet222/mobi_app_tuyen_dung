@@ -20,6 +20,7 @@ const JobItem = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const handleSplitTime = (time) => {
     const now = moment();
     const postTime = moment(new Date(+time));
@@ -54,7 +55,7 @@ const JobItem = () => {
     const fetchData = async () => {
       try {
         const response = await getListJob();
-        setData(response.content);
+        setData(response.content || []);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -79,43 +80,91 @@ const JobItem = () => {
           <Image
             source={{ uri: item.thumbnail }}
             style={styles.image}
-            resizeMode="contain"
+            resizeMode="cover"
           />
-          <View style={styles.itemTitle}>
-            <Text style={styles.textName}>{item.postDetailData.name}</Text>
-          </View>
-          <View style={styles.task}>
-            <Text style={styles.textcateJob}>
-              <Foundation name="torso-business" size={13} color="white" />{" "}
-              {item.postDetailData.jobLevelPostData.value}
-            </Text>
-            <Text style={styles.textExJob}>
-              <FontAwesome5 name="business-time" size={13} color="white" />{" "}
-              {item.postDetailData.expTypePostData.value}
-            </Text>
-            <Text style={styles.textMoney}>
-              <FontAwesome5 name="money-bill-wave" size={13} color="white" />{" "}
-              {item.postDetailData.salaryTypePostData.value}
-            </Text>
-          </View>
-          <View style={styles.task}>
-            <Text style={styles.textAdd}>
-              <FontAwesome5 name="map-marker-alt" size={13} color="white" />{" "}
-              {item.postDetailData.provincePostData.value}
-            </Text>
-            <Text style={styles.textWorkJob}>
-              <FontAwesome5 name="user-clock" size={13} color="white" />{" "}
-              {item.postDetailData.workTypePostData.value}
-            </Text>
-            <Text style={styles.textSex}>
-              <FontAwesome name="intersex" size={13} color="white" />{" "}
-              {item.postDetailData.genderPostData.value}
-            </Text>
-          </View>
-          <View style={styles.timepost}>
-            <Text style={styles.textTime}>
-              {handleSplitTime(item.timePost)}
-            </Text>
+          <View style={styles.contentContainer}>
+            <View style={styles.itemTitle}>
+              <Text
+                style={styles.textName}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {item.postDetailData?.name || "N/A"}
+              </Text>
+            </View>
+            <View style={styles.task}>
+              <View style={styles.taskItem}>
+                <Text
+                  style={styles.textcateJob}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <Foundation name="torso-business" size={13} color="white" />{" "}
+                  {item.postDetailData?.jobLevelPostData?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.taskItem}>
+                <Text
+                  style={styles.textExJob}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <FontAwesome5 name="business-time" size={13} color="white" />{" "}
+                  {item.postDetailData?.expTypePostData?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.taskItem}>
+                <Text
+                  style={styles.textMoney}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <FontAwesome5
+                    name="money-bill-wave"
+                    size={13}
+                    color="white"
+                  />{" "}
+                  {item.postDetailData?.salaryTypePostData?.value || "N/A"}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.task}>
+              <View style={styles.taskItem}>
+                <Text
+                  style={styles.textAdd}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <FontAwesome5 name="map-marker-alt" size={13} color="white" />{" "}
+                  {item.postDetailData?.provincePostData?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.taskItem}>
+                <Text
+                  style={styles.textWorkJob}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <FontAwesome5 name="user-clock" size={13} color="white" />{" "}
+                  {item.postDetailData?.workTypePostData?.value || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.taskItem}>
+                <Text
+                  style={styles.textSex}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <FontAwesome name="intersex" size={13} color="white" />{" "}
+                  {item.postDetailData?.genderPostData?.value || "N/A"}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.timepost}>
+              <Text style={styles.textTime}>
+                {handleSplitTime(item.timePost)}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -136,14 +185,15 @@ const JobItem = () => {
         keyExtractor={(item) => item.id.toString()}
         showsHorizontalScrollIndicator={false}
         horizontal={true}
-      ></FlatList>
+        contentContainerStyle={styles.listContainer}
+      />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   label: {
     padding: 20,
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
@@ -151,106 +201,132 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "#333",
   },
   subtitle: {
     marginTop: 5,
     color: "#4682B4",
-    fontWeight: "medium",
+    fontWeight: "600",
+  },
+  listContainer: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 10,
   },
   itemContainer: {
-    maxWidth: "300",
+    width: 340,
+    height: 350,
     flexDirection: "column",
-    marginLeft: 20,
-    padding: 10,
+    marginRight: 15,
+    padding: 15,
     backgroundColor: "#fff",
     borderRadius: 15,
-    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   image: {
-    width: 200,
-    height: 100,
+    width: "100%",
+    height: 150,
+    borderRadius: 10,
+  },
+  contentContainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
   itemTitle: {
-    marginTop: 7,
+    alignItems: "center",
+    paddingHorizontal: 5,
   },
   textName: {
     fontWeight: "bold",
     fontSize: 17,
-  },
-  textAdd: {
-    marginRight: 10,
-    padding: 5,
-    borderRadius: 10,
-    overflow: "hidden",
-    fontSize: 10,
-    color: "white",
+    color: "#333",
     textAlign: "center",
-    backgroundColor: "#28A745",
-  },
-  textMoney: {
-    marginTop: 10,
-    marginBottom: 10,
-    padding: 5,
-    borderRadius: 10,
-    overflow: "hidden",
-    fontSize: 10,
-    color: "white",
-    textAlign: "center",
-    backgroundColor: "#007BFF",
-  },
-  textSex: {
-    padding: 5,
-    borderRadius: 10,
-    overflow: "hidden",
-    fontSize: 10,
-    color: "white",
-    textAlign: "center",
-    backgroundColor: "#6F42C1",
+    flexWrap: "wrap",
   },
   task: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 5,
+  },
+  taskItem: {
+    width: "33%",
+    minWidth: 0,
+  },
+  textAdd: {
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
+    color: "white",
+    textAlign: "center",
+    backgroundColor: "#28A745",
+    borderWidth: 1,
+    borderColor: "#1e7e34",
+  },
+  textMoney: {
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
+    color: "white",
+    textAlign: "center",
+    backgroundColor: "#007BFF",
+    borderWidth: 1,
+    borderColor: "#0056b3",
+  },
+  textSex: {
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
+    color: "white",
+    textAlign: "center",
+    backgroundColor: "#6F42C1",
+    borderWidth: 1,
+    borderColor: "#5a32a3",
   },
   textcateJob: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginRight: 10,
-    padding: 5,
-    borderRadius: 10,
-    overflow: "hidden",
-    fontSize: 10,
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
     color: "white",
     textAlign: "center",
     backgroundColor: "#3498DB",
+    borderWidth: 1,
+    borderColor: "#2a7ab0",
   },
   textExJob: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginRight: 10,
-    padding: 5,
-    borderRadius: 10,
-    overflow: "hidden",
-    fontSize: 10,
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
     color: "white",
     textAlign: "center",
     backgroundColor: "#8B4513",
+    borderWidth: 1,
+    borderColor: "#6f3a10",
   },
   textWorkJob: {
-    marginRight: 10,
-    padding: 5,
-    borderRadius: 10,
-    overflow: "hidden",
-    fontSize: 10,
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
     color: "white",
     textAlign: "center",
     backgroundColor: "#FFC107",
+    borderWidth: 1,
+    borderColor: "#d39e00",
   },
   timepost: {
-    paddingTop: 10,
+    alignItems: "center",
   },
   textTime: {
-    color: "blue",
+    color: "#4682B4",
+    fontSize: 12,
+    fontWeight: "500",
   },
 });
+
 export default JobItem;

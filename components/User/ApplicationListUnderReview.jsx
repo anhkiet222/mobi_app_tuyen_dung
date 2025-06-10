@@ -164,7 +164,6 @@ const ApplicationListUnderReview = ({ currentPage, setCount, setLoading }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Danh sách đang xem xét</Text>
       <FlatList
         data={dataCv}
         renderItem={renderCVItem}
@@ -191,7 +190,6 @@ const ApplicationListUnderReview = ({ currentPage, setCount, setLoading }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#f5f5f5",
   },
   title: {

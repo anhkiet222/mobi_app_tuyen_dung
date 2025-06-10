@@ -5,8 +5,9 @@ import {
   StyleSheet,
   Text,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,62 +20,94 @@ const CompanyItem = () => {
   const [isEnd, setIsEnd] = useState(false);
   const [post, setPost] = useState([]);
   const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [page, setPage] = useState(0);
+  const flatListRef = useRef(null);
 
-  const loadPost = async (reset = false) => {
-    if (loading || loadingMore) return;
+  const loadPost = useCallback(
+    async (reset = false) => {
+      if (isLoading || isLoadingMore) return;
 
-    if (reset) {
-      setLoading(true);
-    } else {
-      setLoadingMore(true);
-    }
-
-    let params = {
-      offset: reset ? 0 : page,
-      limit: 10,
-      search: search ? search : null,
-    };
-
-    try {
-      const response = await getCompany(params);
       if (reset) {
-        setPost(response);
+        setIsLoading(true);
       } else {
-        setPost((prevPosts) => [...prevPosts, ...response]);
+        setIsLoadingMore(true);
       }
-      setCount(response.totalElements);
-      if (response.length < 10) {
-        setIsEnd(true);
-      } else {
-        setPage((prevPage) => prevPage + 1);
-        setIsEnd(false);
+
+      let params = {
+        offset: reset ? 0 : page,
+        limit: 10,
+        search: search.trim() || null,
+      };
+
+      try {
+        const response = await getCompany(params);
+        if (response) {
+          if (reset) {
+            setPost(response.content || response);
+            setPage(1);
+          } else {
+            setPost((prevPosts) => [
+              ...prevPosts,
+              ...(response.content || response),
+            ]);
+            setPage((prevPage) => prevPage + 1);
+          }
+          setCount(response.totalElements || response.length);
+          setIsEnd((response.content || response).length < 10);
+        } else {
+          setPost([]);
+          setIsEnd(true);
+        }
+      } catch (error) {
+        console.error("Error fetching company data:", error);
+      } finally {
+        if (reset) {
+          setIsLoading(false);
+        } else {
+          setIsLoadingMore(false);
+        }
       }
-    } catch (error) {
-      console.error("Error fetching feature data", error);
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
-  const handleSearch = () => {
+    },
+    [isLoading, isLoadingMore, page, search]
+  );
+
+  useEffect(() => {
     loadPost(true);
-  };
+  }, []);
 
-  const handleLoadMore = () => {
-    if (!isEnd && !loading && !loadingMore) {
-      loadPost();
+  const handleSearch = useCallback(() => {
+    loadPost(true);
+  }, [loadPost]);
+
+  const handleLoadMore = useCallback(() => {
+    if (!isEnd && !isLoading && !isLoadingMore) {
+      loadPost(false);
     }
-  };
-  const handlePress = (id) => {
+  }, [isEnd, isLoading, isLoadingMore, loadPost]);
+
+  const handlePress = useCallback((id) => {
     router.push(`/detailcompany/${id}`);
+  }, []);
+
+  const renderFooter = () => {
+    if (isLoadingMore) {
+      return (
+        <View style={styles.footer}>
+          <ActivityIndicator size="small" color="#0000ff" />
+        </View>
+      );
+    }
+    if (isEnd && post.length > 0) {
+      return;
+    }
+    return null;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -103,13 +136,16 @@ const CompanyItem = () => {
               placeholderTextColor="gray"
               value={search}
               onChangeText={setSearch}
-              returnKeyType="Tìm"
+              returnKeyType="search"
               onSubmitEditing={handleSearch}
             />
             {search.length > 0 && (
               <TouchableOpacity
                 style={styles.clearIconContainer}
-                onPress={() => setSearch("")}
+                onPress={() => {
+                  setSearch("");
+                  handleSearch();
+                }}
               >
                 <Ionicons
                   name="close"
@@ -122,32 +158,30 @@ const CompanyItem = () => {
           </View>
         </View>
       </View>
-      {post.length === 0 && !loadingMore && loading && (
-        <View style={styles.noDataContainer}>
-          <Text style={styles.noDataText}>Không có dữ liệu tìm kiếm</Text>
-        </View>
-      )}
-
-      <CompanyList
-        post={post}
-        handleLoadMore={handleLoadMore}
-        handlePress={handlePress}
-        loading={loadingMore}
+      <FlatList
+        ref={flatListRef}
+        data={post}
+        renderItem={({ item }) => (
+          <CompanyList post={[item]} handlePress={handlePress} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={21}
+        ListEmptyComponent={
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>Không có dữ liệu tìm kiếm</Text>
+          </View>
+        }
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingBottom: 10,
-    paddingTop: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-  },
   searchContainer: {
     marginBottom: 10,
     flexDirection: "row",
@@ -155,13 +189,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 10,
     marginHorizontal: 15,
-  },
-  userIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#ddd",
   },
   search: {
     flex: 1,
@@ -186,6 +213,16 @@ const styles = StyleSheet.create({
   clearIconContainer: {
     marginLeft: 10,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  footer: {
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   noDataContainer: {
     flex: 1,
     justifyContent: "center",
@@ -197,4 +234,5 @@ const styles = StyleSheet.create({
     color: "gray",
   },
 });
+
 export default CompanyItem;
