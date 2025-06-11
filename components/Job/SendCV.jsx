@@ -15,16 +15,10 @@ import * as DocumentPicker from "expo-document-picker";
 import { AuthContext } from "../AuthContext";
 import { createCV } from "../../api/jobApi";
 import { getDetailUserById } from "../../api/userApi";
-import { sendEmail } from "../../api/emailApi";
+import { sendEmail } from "../../api/emailapi";
 import "react-native-polyfill-globals";
 
-const SendCV = ({
-  isOpen,
-  onHide,
-  postId,
-  jobTitle,
-  emailCompany,
-}) => {
+const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
   const [selectedType, setSelectedType] = useState("pcCv");
   const [loading, setloading] = useState(false);
   const { userData, userToken } = useContext(AuthContext);
@@ -171,7 +165,6 @@ const SendCV = ({
       Alert.alert("Lỗi", "Có lỗi xảy ra khi chọn file.");
     }
   };
-
 
   if (loading) {
     return (
@@ -374,12 +367,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   loadingOverlay: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "rgba(0, 0, 0, 0.7)",
-},
-
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
 });
 
 export default SendCV;

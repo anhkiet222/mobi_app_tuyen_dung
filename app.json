@@ -5,7 +5,7 @@
         "version": "1.0.0",
         "orientation": "portrait",
         "sdkVersion": "51.0.0",
-        "icon": "./assets/images/splash.png",
+        "icon": "./assets/images/icon-logo.png",
         "scheme": "myapp",
         "userInterfaceStyle": "automatic",
         "splash": {
@@ -41,7 +41,7 @@
             "typedRoutes": true
         },
         "extra": {
-            "apiUrl": "http://171.244.40.25:8080/app-tuyen-dung/api/v1",
+            "apiUrl": "https://tuyendungpkl.xyz/api/v1",
             "router": {
                 "origin": false
             },
