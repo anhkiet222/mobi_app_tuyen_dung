@@ -15,7 +15,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { AuthContext } from "../AuthContext";
 import { createCV } from "../../api/jobApi";
 import { getDetailUserById } from "../../api/userApi";
-import { sendEmail } from "../../api/emailapi";
+import { sendEmail } from "../../api/emailApi";
 import "react-native-polyfill-globals";
 
 const SendCV = ({ isOpen, onHide, postId, jobTitle, emailCompany }) => {
