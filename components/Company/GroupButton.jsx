@@ -33,7 +33,7 @@ import React from 'react'
   const OnPressHandle = (item) => {
     if (item.name == 'Chia sẻ') {
       Share.share({
-        message: `Chia sẻ thông tin: ${data?.websiteCompanyValue}`,
+        message: `Chia sẻ thông tin: ${data?.website}`,
       });
       return;
     }
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5ef',
   },
   columnWrapper: {
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
   item: {
     flex: 1,
