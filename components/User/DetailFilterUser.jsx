@@ -159,14 +159,6 @@ const DetailFilterUser = () => {
     <ScrollView style={styles.container}>
       <View style={styles.card}>
         <View style={styles.cardBody}>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.backButton}
-          >
-            <Text style={styles.backText}>
-              <Text style={{ color: "red" }}>← </Text>Quay lại
-            </Text>
-          </TouchableOpacity>
 
           <Text style={styles.cardTitle}>Thông tin chi tiết ứng viên</Text>
 

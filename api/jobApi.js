@@ -98,7 +98,7 @@ export const fetchDataJobLocation = async () => {
     }
 };
 
-export const createCV = async (formdata, token) => {  
+export const createCV = async (formdata, token) => {
     try {
       const response = await axios.post(
         `${apiUrl}/cv/createCVmobi`,
@@ -106,14 +106,12 @@ export const createCV = async (formdata, token) => {
         {
           headers: {
             Authorization: `Bearer ${token}`
-            
+
           },
         }
       );
       return response.data;
     } catch (error) {
-      console.log("Error createCV data:", error);
-      throw error;
+      console.log("Error createCV data:", error.response.data);
     }
   };
-  
